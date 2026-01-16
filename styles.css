@@ -3,6 +3,9 @@
   --panel:#071126;
   --accent:#0ea5ff;
   --muted:#93c5fd;
+  --mx:50; /* mouse x (percent) */
+  --my:50; /* mouse y (percent) */
+  --time:0; /* for idle animation */
 }
 *{box-sizing:border-box}
 body{
@@ -13,6 +16,39 @@ body{
   -webkit-font-smoothing:antialiased;
   -moz-osx-font-smoothing:grayscale;
 }
+
+/* Dynamic background layer */
+body::before{
+  content:"";
+  position:fixed;
+  inset:0;
+  z-index:-1;
+  pointer-events:none;
+  background:
+    radial-gradient(600px circle at calc(var(--mx) * 1%) calc(var(--my) * 1%), rgba(14,165,255,0.18), transparent 20%),
+    radial-gradient(400px circle at calc((100 - var(--mx)) * 1%) calc((100 - var(--my)) * 1%), rgba(10,30,60,0.28), transparent 25%),
+    linear-gradient(180deg, rgba(2,8,23,0.65), rgba(0,0,0,0.6));
+  transition:background-position 200ms linear;
+  mix-blend-mode:screen;
+  filter:blur(30px) saturate(120%);
+  opacity:0.95;
+}
+
+@keyframes drift {
+  from{transform:translate3d(-2px,-2px,0)}
+  50%{transform:translate3d(2px,2px,0)}
+  to{transform:translate3d(-2px,-2px,0)}
+}
+body::after{
+  content:"";
+  position:fixed;
+  inset:0;
+  z-index:-2;
+  pointer-events:none;
+  background:radial-gradient(circle at 10% 20%, rgba(14,165,255,0.03), transparent 12%),
+             radial-gradient(circle at 80% 80%, rgba(14,165,255,0.02), transparent 10%);
+  animation:drift 12s ease-in-out infinite;
+}
 .container{max-width:1100px;margin:0 auto;padding:1rem}
 .site-header{background:rgba(0,0,0,0.6);border-bottom:1px solid rgba(255,255,255,0.04)}
 .site-header .container{display:flex;align-items:center;justify-content:space-between;padding:1rem}
@@ -21,7 +57,14 @@ body{
 .hero{padding:5rem 1rem;text-align:center;background:linear-gradient(90deg,rgba(14,165,255,0.06),transparent)}
 .hero h2{font-size:2rem;margin:0 0 .5rem;color:var(--accent)}
 .hero p{max-width:60ch;margin:0 auto 1rem;color:#bcdfff}
-.btn{display:inline-block;padding:.75rem 1.25rem;background:var(--accent);color:#001;border-radius:6px;text-decoration:none;font-weight:600}
+.btn{display:inline-block;padding:.75rem 1.25rem;background:var(--accent);color:#001;border-radius:8px;text-decoration:none;font-weight:700;transition:transform .15s ease, box-shadow .15s ease, background-color .15s ease;box-shadow:0 6px 18px rgba(14,165,255,0.08);border:1px solid rgba(255,255,255,0.04);}
+.btn:hover{transform:translateY(-3px);box-shadow:0 12px 30px rgba(14,165,255,0.18);background:linear-gradient(180deg,var(--accent),#09a0e6)}
+.btn:active{transform:translateY(-1px)}
+.btn:focus{outline:3px solid rgba(14,165,255,0.12);outline-offset:2px}
+
+/* Outline / secondary button */
+.btn-outline{background:transparent;color:var(--accent);border:1px solid rgba(14,165,255,0.22);backdrop-filter: blur(6px)}
+.btn-outline:hover{background:rgba(14,165,255,0.06);color:#dff3ff;box-shadow:0 8px 22px rgba(14,165,255,0.08)}
 .content{padding:2rem 1rem}
 .content h3{color:var(--accent)}
 .site-footer{padding:1rem;border-top:1px solid rgba(255,255,255,0.04);text-align:center;color:#9fbff6;font-size:.9rem}
